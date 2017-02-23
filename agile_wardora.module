@@ -1,0 +1,48 @@
+<?php
+
+function agile_wardora_menu() {
+  $items['islandora/object/%islandora_object/manage/datastreams/reingestmarcxml'] = array(
+    'title' => 'Re-ingest MarcXML',
+    'file' => 'includes/agile_reingest_marc.inc',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('agile_marcxml_file_form', 2),
+    'type' => MENU_LOCAL_ACTION,
+    'access callback' => 'islandora_object_access_callback',
+    'access arguments' => array(ISLANDORA_ADD_DS, 2),
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function agile_wardora_theme() {
+  return array(
+    'agile_wardora_book' => array(
+      'variables' => array('object' => NULL),
+      'file' => 'theme/theme.inc',
+      'template' => 'theme/agile-wardora-book',
+    ),
+  );
+}
+
+/**
+ * Implements hook_theme_registry_alter().
+ */
+function agile_wardora_theme_registry_alter(&$theme_registry) {
+  if (isset($theme_registry['islandora_book_book'])) {
+    $module_path = drupal_get_path('module', 'agile_wardora');
+    $theme_registry['islandora_book_book']['theme path'] = $module_path;
+    $theme_registry['islandora_book_book']['template'] = $module_path . '/theme/agile-wardora-book';
+  }
+}
+
+/**
+ * Implements hook_preprocess().
+ */
+function agile_wardora_preprocess_islandora_book_book(&$variables) {
+  $object = $variables['object'];
+  if (isset($object['PDF'])) {
+    $variables['download'] = l(t('Download PDF of this book'), "/islandora/object/{$variables['object']->id}/datastream/PDF/download");
+  }
+}

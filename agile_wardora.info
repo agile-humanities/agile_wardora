@@ -1,0 +1,5 @@
+name = Wardora Customization 
+description = Code specific to Warburg Institute
+core = 7.x
+package = Agile Humanities
+version = 7.x-1.0
